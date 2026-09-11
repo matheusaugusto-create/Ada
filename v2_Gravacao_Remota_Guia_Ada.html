@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gravação Remota · Guia Ada para gravar aulas em casa</title>
+<meta name="description" content="Guia da Ada para escritores e professores gravarem suas próprias aulas remotamente: equipamentos, configuração do OBS, enquadramento, roteiro e checklist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --cream:   #FDFBF4;
+  --cream-1: #F5F1E6;
+  --cream-2: #EDE8DA;
+  --ink:     #141414;
+  --ink-1:   #2B2B27;
+  --ink-2:   #54534A;
+  --ink-3:   #6C6A60;
+  --surface:      #FFFFFF;
+  --surface-line: #EAE4D3;
+  --line-strong:  #C9C2AD;
+
+  --green-50:  #F1FCEF;
+  --green-100: #DCF9D6;
+  --green-200: #B3F2A9;
+  --green-400: #5BE066;
+  --green-500: #29C947;
+  --green-600: #0F9D29;
+  --green-700: #0A6E1D;
+
+  --sky-100:  #E4EEFB;
+  --sky-200:  #C9DEF7;
+  --sky-600:  #2A5D8F;
+  --sky-700:  #1F4870;
+
+  --amber-100: #FBF0D2;
+  --amber-200: #F5DFA0;
+  --amber-700: #7A5B00;
+
+  --rose-100: #FBE6E1;
+  --rose-200: #F3C7BC;
+  --rose-700: #8E2A17;
+
+  --rec-red: #E43D30;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --shadow-soft: 0 6px 20px -12px rgba(20,20,20,.14), 0 18px 36px -20px rgba(20,20,20,.10);
+  --shadow-pop:  0 14px 34px -14px rgba(20,20,20,.24), 0 30px 60px -28px rgba(20,20,20,.22);
+  --shadow-green:0 10px 26px -12px rgba(41,201,71,.35);
+
+  --ease: cubic-bezier(.34,1.56,.64,1);
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family:'Manrope', system-ui, -apple-system, sans-serif;
+  font-feature-settings:'ss01','cv11';
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.005em;
+  line-height:1.5;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; }
+.serif-em{
+  font-family:'Fraunces', serif;
+  font-style:italic;
+  font-weight:600;
+}
+.mono{ font-family:'JetBrains Mono', monospace; }
+section[id]{ scroll-margin-top: 20px; }
+.wrap{ max-width: 1120px; margin:0 auto; padding:0 32px; }
+
+/* background texture (subtle, whole-page) */
+.bg-tex{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background-image:
+    radial-gradient(circle at 8% 6%, rgba(91,224,102,.10), transparent 38%),
+    radial-gradient(circle at 96% 14%, rgba(42,93,143,.06), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(245,223,160,.10), transparent 46%);
+}
+
+/* ============ SLIDE SECTIONS ============ */
+/* Every major block reads as a self-contained "slide": generous padding,
+   alternating tone, a small corner marker instead of app-style chrome. */
+.slide{
+  position:relative;
+  padding: 96px 0;
+}
+.slide.tint{ background: var(--cream-1); }
+.slide + .slide{ border-top: 1px solid var(--surface-line); }
+.slide-mark{
+  position:absolute; top:40px; right:32px;
+  font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600;
+  color:var(--ink-3); letter-spacing:.1em;
+}
+@media (max-width:760px){
+  .slide{ padding:64px 0; }
+  .slide-mark{ top:24px; right:20px; font-size:10.5px; }
+}
+
+/* small persistent brand mark, top-left, non-sticky */
+.brandmark{
+  display:inline-flex; align-items:center; gap:9px;
+  font-weight:800; font-size:14px; letter-spacing:-0.01em;
+}
+.brandmark img{ width:24px; height:24px; border-radius:7px; display:block; }
+.brandmark .pipe{ color:var(--ink-3); font-weight:400; margin:0 1px; }
+.brandmark .tag{ color:var(--ink-2); font-weight:600; }
+
+.rec-indicator{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700;
+  letter-spacing:.08em; color:var(--rec-red);
+  padding:6px 12px 6px 9px; border-radius:999px;
+  background:#fff; border:1px solid rgba(228,61,48,.28);
+}
+.rec-dot{
+  width:8px; height:8px; border-radius:50%; background:var(--rec-red);
+  box-shadow:0 0 0 3px rgba(228,61,48,.18);
+  animation: rec-blink 1.6s ease-in-out infinite;
+}
+@keyframes rec-blink{ 0%,100%{opacity:1;} 50%{opacity:.25;} }
+
+/* ============ COVER (slide 1) ============ */
+.cover{ padding: 56px 0 0; }
+.cover-top{ display:flex; align-items:center; justify-content:space-between; }
+.cover-text{ margin-top:48px; max-width:760px; }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:9px 18px 9px 11px; background:var(--surface);
+  border:1px solid var(--surface-line); border-radius:999px;
+  font-size:13.5px; font-weight:700; color:var(--ink-1);
+}
+.e-dot{
+  width:9px; height:9px; border-radius:50%;
+  background:linear-gradient(135deg,var(--green-400),var(--green-500));
+  box-shadow:0 0 0 3px var(--green-100);
+}
+.cover h1{
+  margin:24px 0 0; font-size:clamp(42px,6.2vw,72px); font-weight:800;
+  letter-spacing:-0.035em; line-height:1.0; color:var(--ink);
+}
+.cover p.lead{
+  margin:22px 0 0; font-size:19px; line-height:1.62; color:var(--ink-2);
+  max-width:62ch;
+}
+.cover-cta{ margin-top:30px; display:flex; gap:12px; flex-wrap:wrap; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 22px; border-radius:999px; font-weight:700; font-size:15px;
+  text-decoration:none; border:1px solid transparent; cursor:pointer;
+}
+.btn-primary{ background:var(--ink); color:var(--green-400); }
+.btn-primary:hover{ background:var(--ink-1); }
+.btn-ghost{ background:var(--surface); border-color:var(--surface-line); color:var(--ink-1); }
+.btn-ghost:hover{ border-color:var(--line-strong); }
+
+/* video block — now the dominant visual on the cover, full width */
+.cover-video{ margin-top:44px; }
+
+/* viewfinder frame (cover art) — hosts the real intro video.
+   Corners sit in a real padding ring (never over the iframe itself),
+   so they stay visible regardless of how the embedded page renders. */
+.viewfinder{
+  position:relative; background:var(--ink); border-radius:var(--radius-xl);
+  padding:16px; box-shadow:var(--shadow-pop); aspect-ratio:16/9;
+  max-height:640px; margin:0 auto;
+}
+.vf-inner{ position:absolute; inset:16px; border-radius:16px; overflow:hidden; background:#000; }
+.vf-inner iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.vf-corner{ position:absolute; width:26px; height:26px; pointer-events:none; }
+.vf-corner.tl{ top:0; left:0; border-top:3.5px solid var(--green-400); border-left:3.5px solid var(--green-400); border-radius:8px 0 0 0; }
+.vf-corner.tr{ top:0; right:0; border-top:3.5px solid var(--green-400); border-right:3.5px solid var(--green-400); border-radius:0 8px 0 0; }
+.vf-corner.bl{ bottom:0; left:0; border-bottom:3.5px solid var(--green-400); border-left:3.5px solid var(--green-400); border-radius:0 0 0 8px; }
+.vf-corner.br{ bottom:0; right:0; border-bottom:3.5px solid var(--green-400); border-right:3.5px solid var(--green-400); border-radius:0 0 8px 0; }
+.vf-cap{ margin-top:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.vf-cap .t{ font-size:15px; color:var(--ink-1); font-weight:700; }
+.vf-cap a{ font-size:14px; font-weight:700; color:var(--ink); text-decoration:underline; white-space:nowrap; }
+
+/* cover stat strip (big numbers, like a keynote closer) */
+.cover-stats{
+  margin-top:44px; display:grid; grid-template-columns:repeat(4,1fr);
+  background:var(--surface); border:1px solid var(--surface-line); border-radius:28px;
+  box-shadow:0 10px 30px -18px rgba(20,20,20,.14);
+}
+.cover-stat{ padding:28px 24px; border-right:1px dashed var(--surface-line); text-align:center; }
+.cover-stat:last-child{ border-right:0; }
+.cover-stat .v{ font-family:'JetBrains Mono',monospace; font-size:clamp(22px,2.6vw,30px); font-weight:800; color:var(--ink); letter-spacing:-0.02em; }
+.cover-stat .l{ margin-top:6px; font-size:12px; color:var(--ink-3); font-weight:600; letter-spacing:.04em; }
+@media (max-width:760px){
+  .cover-stats{ grid-template-columns:1fr 1fr; }
+  .cover-stat{ border-bottom:1px dashed var(--surface-line); }
+  .cover-stat:nth-child(2){ border-right:0; }
+}
+
+/* ============ AGENDA (slide 2) ============ */
+.agenda-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:44px; }
+.agenda-card{
+  display:block; text-decoration:none; color:inherit;
+  background:var(--surface); border:1px solid var(--surface-line); border-radius:var(--radius-lg);
+  padding:28px 24px; box-shadow:0 3px 12px -8px rgba(20,20,20,.06);
+  transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.agenda-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-soft); }
+.agenda-num{
+  width:42px; height:42px; border-radius:12px; display:grid; place-items:center;
+  font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px;
+  background:linear-gradient(135deg,var(--green-100),var(--green-200)); color:var(--green-700);
+}
+.agenda-card:nth-child(4n+2) .agenda-num{ background:linear-gradient(135deg,var(--sky-100),var(--sky-200)); color:var(--sky-700); }
+.agenda-card:nth-child(4n+3) .agenda-num{ background:linear-gradient(135deg,var(--amber-100),var(--amber-200)); color:var(--amber-700); }
+.agenda-card:nth-child(4n) .agenda-num{ background:linear-gradient(135deg,var(--rose-100),var(--rose-200)); color:var(--rose-700); }
+.agenda-ttl{ margin-top:18px; font-size:18px; font-weight:800; letter-spacing:-0.01em; line-height:1.25; }
+.agenda-tag{ margin-top:10px; font-size:13.5px; color:var(--ink-2); line-height:1.5; padding-top:14px; border-top:1px dashed var(--surface-line); }
+@media (max-width:860px){ .agenda-grid{ grid-template-columns:1fr 1fr; } }
+@media (max-width:560px){ .agenda-grid{ grid-template-columns:1fr; } }
+
+/* ============ SECTION HEAD ============ */
+.s-head{ max-width:760px; }
+.s-eyebrow{
+  display:inline-flex; align-items:center; gap:9px;
+  font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:600;
+  color:var(--green-700); letter-spacing:.08em;
+}
+.s-title{
+  margin:16px 0 0; font-size:clamp(30px,4.4vw,46px); font-weight:800;
+  letter-spacing:-0.025em; color:var(--ink); line-height:1.08;
+}
+.s-sub{ margin:16px 0 0; font-size:16.5px; color:var(--ink-2); max-width:68ch; line-height:1.62; }
+.s-body{ margin-top:44px; }
+
+/* ============ CARDS generic ============ */
+.card{
+  background:var(--surface); border:1px solid var(--surface-line);
+  border-radius:var(--radius-lg); box-shadow:0 3px 10px -6px rgba(20,20,20,.06);
+}
+
+/* equipment cards */
+.equip-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.equip-col{ display:flex; flex-direction:column; gap:14px; }
+.equip-card{ padding:26px 22px; display:flex; flex-direction:column; gap:14px; }
+.equip-icon{
+  width:50px; height:50px; border-radius:14px; display:grid; place-items:center;
+  font-size:23px; background:linear-gradient(135deg,var(--green-100),var(--green-200));
+}
+.equip-card.sky .equip-icon{ background:linear-gradient(135deg,var(--sky-100),var(--sky-200)); }
+.equip-card.amber .equip-icon{ background:linear-gradient(135deg,var(--amber-100),var(--amber-200)); }
+.equip-name{ font-size:18px; font-weight:800; letter-spacing:-0.01em; }
+.equip-desc{ font-size:15px; color:var(--ink-2); line-height:1.55; }
+
+/* info / meta rows */
+.meta-row{
+  display:grid; grid-template-columns:46px 1fr; gap:16px; align-items:flex-start;
+  padding:16px 20px; background:var(--surface); border:1px solid var(--surface-line);
+  border-radius:var(--radius-md);
+}
+.meta-row .ic{ width:46px; height:46px; border-radius:12px; display:grid; place-items:center; font-size:20px; background:linear-gradient(135deg,var(--green-100),var(--green-200)); }
+.meta-row.sky .ic{ background:linear-gradient(135deg,var(--sky-100),var(--sky-200)); }
+.meta-row.amber .ic{ background:linear-gradient(135deg,var(--amber-100),var(--amber-200)); }
+.meta-row .nm{ font-weight:800; font-size:15.5px; display:block; }
+.meta-row .ds{ font-size:14.5px; color:var(--ink-2); margin-top:4px; line-height:1.55; }
+.meta-stack{ display:flex; flex-direction:column; gap:12px; }
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:start; }
+@media (max-width:860px){ .two-col{ grid-template-columns:1fr; gap:28px; } }
+
+/* callouts */
+.callout{
+  display:flex; gap:16px; padding:22px 24px; border-radius:var(--radius-md);
+  border:1.5px solid var(--amber-200); background:linear-gradient(135deg,#fff,var(--amber-100));
+}
+.callout .ic{ font-size:22px; flex-shrink:0; line-height:1; }
+.callout b{ display:block; margin-bottom:4px; font-size:15.5px; }
+.callout p{ margin:0; font-size:14.5px; color:var(--ink-1); line-height:1.55; }
+.callout .specs{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+.spec-chip{
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px;
+  background:#fff; border:1px solid var(--amber-200); color:var(--amber-700);
+  padding:6px 12px; border-radius:8px;
+}
+
+/* link buttons */
+.link-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 20px; border-radius:12px; background:var(--ink); color:#fff;
+  text-decoration:none; font-weight:700; font-size:14.5px;
+}
+.link-btn:hover{ background:var(--ink-1); }
+.link-btn .ar{ color:var(--green-400); }
+.link-btn.ghost{ background:#fff; color:var(--ink-1); border:1px solid var(--surface-line); }
+.link-btn.ghost .ar{ color:var(--ink-3); }
+.link-btn.ghost:hover{ border-color:var(--line-strong); }
+
+/* image gallery / viewfinder-framed screenshots */
+.shot{
+  position:relative; border-radius:var(--radius-md); overflow:hidden;
+  border:1px solid var(--surface-line); background:var(--ink);
+}
+.shot img{ width:100%; display:block; }
+.shot .corner{ position:absolute; width:18px; height:18px; z-index:2; }
+.shot .corner.tl{ top:8px; left:8px; border-top:2.5px solid rgba(255,255,255,.65); border-left:2.5px solid rgba(255,255,255,.65); border-radius:4px 0 0 0; }
+.shot .corner.tr{ top:8px; right:8px; border-top:2.5px solid rgba(255,255,255,.65); border-right:2.5px solid rgba(255,255,255,.65); border-radius:0 4px 0 0; }
+.shot .corner.bl{ bottom:8px; left:8px; border-bottom:2.5px solid rgba(255,255,255,.65); border-left:2.5px solid rgba(255,255,255,.65); border-radius:0 0 0 4px; }
+.shot .corner.br{ bottom:8px; right:8px; border-bottom:2.5px solid rgba(255,255,255,.65); border-right:2.5px solid rgba(255,255,255,.65); border-radius:0 0 4px 0; }
+.shot-cap{ font-size:13.5px; color:var(--ink-2); margin-top:10px; line-height:1.5; }
+.shot-cap b{ color:var(--ink); }
+
+/* OBS UI mockups — real markup instead of low-res screenshots, so they stay crisp
+   at any pixel density. Visually evocative of OBS's dark UI, not a pixel clone. */
+.obs-dark{ --obsbg:#1c1e26; --obspanel:#20222b; --obsfield:#262932; --obsline:#363a46;
+  --obstxt:#e7e8ec; --obsmut:#9a9ca6; --obsaccent:#3461d1; }
+
+/* Icon system: small inline-SVG icons (via mask) redrawn to match OBS's real
+   monochrome line-icon set, instead of emoji — so color/size/style stay
+   fully under our control and consistent with the reference screenshots. */
+.oi{ display:inline-block; flex-shrink:0; background-color:currentColor;
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center; mask-position:center;
+  -webkit-mask-size:contain; mask-size:contain; }
+.oi-16{ width:16px; height:16px; }
+.oi-14{ width:14px; height:14px; }
+.oi-13{ width:13px; height:13px; }
+
+.oi-gear{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm9.4 2.7-1.6-.3a7.6 7.6 0 0 0-.5-1.2l1-1.3a1 1 0 0 0-.1-1.3l-1.3-1.3a1 1 0 0 0-1.3-.1l-1.3 1a7.6 7.6 0 0 0-1.2-.5l-.3-1.6a1 1 0 0 0-1-.8h-1.8a1 1 0 0 0-1 .8l-.3 1.6a7.6 7.6 0 0 0-1.2.5l-1.3-1a1 1 0 0 0-1.3.1L4.7 6.1a1 1 0 0 0-.1 1.3l1 1.3a7.6 7.6 0 0 0-.5 1.2l-1.6.3a1 1 0 0 0-.8 1v1.8a1 1 0 0 0 .8 1l1.6.3a7.6 7.6 0 0 0 .5 1.2l-1 1.3a1 1 0 0 0 .1 1.3l1.3 1.3a1 1 0 0 0 1.3.1l1.3-1a7.6 7.6 0 0 0 1.2.5l.3 1.6a1 1 0 0 0 1 .8h1.8a1 1 0 0 0 1-.8l.3-1.6a7.6 7.6 0 0 0 1.2-.5l1.3 1a1 1 0 0 0 1.3-.1l1.3-1.3a1 1 0 0 0 .1-1.3l-1-1.3a7.6 7.6 0 0 0 .5-1.2l1.6-.3a1 1 0 0 0 .8-1v-1.8a1 1 0 0 0-.8-1z' fill='%23000'/%3E%3C/svg%3E"); }
+.oi-antenna{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 3l5 5'/%3E%3Cpath d='M3 3l-.8 3.3 3.3-.8'/%3E%3Cpath d='M9 6.3c2.2-.8 4.8.8 5.3 3.2'/%3E%3Cline x1='9.5' y1='9' x2='9.5' y2='15.7'/%3E%3Cline x1='6.3' y1='15.7' x2='12.7' y2='15.7'/%3E%3C/svg%3E"); }
+.oi-dualmonitor{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='2' y='2' width='11' height='8' rx='1.3' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3Crect x='7' y='8' width='11' height='8' rx='1.3' fill='%23000'/%3E%3C/svg%3E"); }
+.oi-speaker{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 8h3l4-3.3v10.6L6 12H3z' fill='%23000'/%3E%3Cpath d='M13.2 7a4.3 4.3 0 0 1 0 6' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.oi-monitor{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='3' y='4' width='14' height='11' rx='1.6' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E"); }
+.oi-keyboard{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='2' y='5' width='16' height='10' rx='1.4' fill='none' stroke='%23000' stroke-width='1.4'/%3E%3Cline x1='5' y1='8.3' x2='5.8' y2='8.3' stroke='%23000' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='8.1' y1='8.3' x2='8.9' y2='8.3' stroke='%23000' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='11.1' y1='8.3' x2='11.9' y2='8.3' stroke='%23000' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='14.2' y1='8.3' x2='15' y2='8.3' stroke='%23000' stroke-width='1.3' stroke-linecap='round'/%3E%3Cline x1='5' y1='11.7' x2='15' y2='11.7' stroke='%23000' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.oi-accessibility{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10' cy='10' r='7.5' stroke-width='1.4'/%3E%3Ccircle cx='10' cy='6.6' r='1.3' fill='%23000' stroke='none'/%3E%3Cpath d='M6 9.3c2.2.9 5.8.9 8 0' stroke-width='1.3'/%3E%3Cpath d='M10 9.3v5.8M8.2 15.3L10 12l1.8 3.3' stroke-width='1.3'/%3E%3C/svg%3E"); }
+.oi-tools{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 16l5-5'/%3E%3Cpath d='M11.5 8.5a2 2 0 1 0 2.8-2.8l-.9.9-1.4-1.4.9-.9a2 2 0 1 0-2.8 2.8z' fill='%23000' stroke='none'/%3E%3Cpath d='M16 4l-5 5'/%3E%3Cpath d='M8 12l1.5 1.5-1.8 1.8L6 13.7z' fill='%23000' stroke='none'/%3E%3C/svg%3E"); }
+.oi-image{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2.3' y='2.3' width='15.4' height='15.4' rx='2'/%3E%3Ccircle cx='7' cy='7.3' r='1.5' fill='%23000' stroke='none'/%3E%3Cpath d='M3 14l4.3-4.3L10.5 13l2.3-2.3L17 14.5'/%3E%3C/svg%3E"); }
+.oi-monitorstand{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='3' width='16' height='10.5' rx='1.4'/%3E%3Cline x1='10' y1='13.5' x2='10' y2='16.3'/%3E%3Cline x1='6.5' y1='16.5' x2='13.5' y2='16.5'/%3E%3C/svg%3E"); }
+.oi-camera{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.2 6L7.5 3.8h5L13.8 6'/%3E%3Crect x='2' y='6' width='16' height='10.3' rx='2'/%3E%3Ccircle cx='10' cy='11.1' r='2.8'/%3E%3C/svg%3E"); }
+.oi-layers{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.6'%3E%3Crect x='2' y='2' width='9' height='7'/%3E%3Crect x='7' y='7' width='9' height='7'/%3E%3C/svg%3E"); }
+.oi-eye{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1 10C1 10 4.3 4.5 10 4.5S19 10 19 10 15.7 15.5 10 15.5 1 10 1 10ZM10 12.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2Z' fill='%23000'/%3E%3C/svg%3E"); }
+.oi-unlock{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='4' y='9' width='12' height='8.5' rx='1.4' fill='%23000'/%3E%3Cpath d='M7 9V6.3a4 4 0 0 1 7.3-2.3' stroke='%23000' stroke-width='1.7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.oi-plus{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cline x1='10' y1='3.5' x2='10' y2='16.5' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='3.5' y1='10' x2='16.5' y2='10' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.oi-trash{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6h12'/%3E%3Cpath d='M8 6V4.6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V6'/%3E%3Cpath d='M6 6l.7 9.3a1.4 1.4 0 0 0 1.4 1.3h3.8a1.4 1.4 0 0 0 1.4-1.3L14 6'/%3E%3Cline x1='8.3' y1='9' x2='8.6' y2='13.3'/%3E%3Cline x1='11.7' y1='9' x2='11.4' y2='13.3'/%3E%3C/svg%3E"); }
+.oi-chevup{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.5L10 7l5.5 5.5'/%3E%3C/svg%3E"); }
+.oi-chevdown{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 7.5L10 13l5.5-5.5'/%3E%3C/svg%3E"); }
+.oi-check{ --svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 7.2l3 3 6-6.5'/%3E%3C/svg%3E"); }
+.oi{ -webkit-mask-image:var(--svg); mask-image:var(--svg); }
+.obsp{ background:var(--obsbg); border-radius:12px; color:var(--obstxt); font-size:12.5px; overflow:hidden; width:100%; min-width:0; box-sizing:border-box; }
+.obsp-header{ background:var(--obspanel); padding:11px 16px; font-weight:700; font-size:12.5px;
+  border-bottom:1px solid var(--obsline); display:flex; align-items:center; gap:9px; }
+.obsp-list{ padding:6px 0; }
+.obsp-item{ display:flex; align-items:center; justify-content:space-between; padding:10px 16px; font-size:12.5px; color:#d4d5da; }
+.obsp-item .nm{ display:flex; align-items:center; gap:10px; }
+.obsp-item .icons{ display:flex; gap:12px; color:var(--obsmut); font-size:12px; }
+.obsp-item .icons .oi-eye{ background-color:#eef0f3; }
+.obsp-empty{ height:56px; }
+.obsp-toolbar{ display:flex; align-items:center; gap:6px; padding:11px 14px; border-top:1px solid var(--obsline); }
+.obsp-tbtn{ width:27px; height:23px; border-radius:6px; background:var(--obsfield); display:grid; place-items:center; color:#c7c9d1; }
+.obsp-tbtn.foc{ background:#3c3f4c; }
+.obsp-sep{ width:1px; height:16px; margin:0 2px;
+  background-image:linear-gradient(to bottom, #5a5d68 50%, transparent 0%);
+  background-size:2px 5px; background-repeat:repeat-y; }
+
+.obss{ display:flex; background:var(--obsbg); border-radius:12px; overflow:hidden; width:100%; min-width:0; box-sizing:border-box; }
+.obss-side{ width:132px; background:var(--obspanel); padding:10px 0; flex-shrink:0; }
+.obss-side .it{ padding:9px 14px; font-size:11.5px; color:#aeb0b8; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+.obss-side .it.on{ background:var(--obsaccent); color:#fff; }
+.obss-main{ flex:1; padding:20px 22px; display:flex; flex-direction:column; gap:13px; min-width:0; }
+.obss-row{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+.obss-row .lb{ font-size:11px; color:#9fa1aa; }
+.obss-row .fd{ background:var(--obsfield); border:1px solid var(--obsline); border-radius:6px; padding:8px 12px;
+  font-size:12px; color:var(--obstxt); display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:0; width:100%; box-sizing:border-box; }
+.obss-row .fd span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.obss-row .fd .car{ color:#7d7f89; font-size:9px; flex-shrink:0; }
+.obss-row .hint{ font-size:10.5px; color:#787a83; }
+.obss-section{ font-size:10.5px; font-weight:700; color:#8b8d96; text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+.obss-check{ display:flex; align-items:center; gap:8px; font-size:11.5px; color:#c3c4ca; }
+.obss-check .cb{ width:14px; height:14px; border:1.5px solid #6b6e79; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.obss-check .cb.on .oi{ background-color:#e7e8ec; }
+.obss-tracks{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.obss-tracks .lb{ margin-right:2px; }
+.obss-track{ display:flex; align-items:center; gap:5px; font-size:11.5px; color:#c3c4ca; }
+.obss-track .cb{ width:14px; height:14px; border:1.5px solid #6b6e79; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+.obss-track .cb.on .oi{ background-color:#e7e8ec; }
+.obss-btn-sm{ background:#2f323d; border:1px solid #3d404c; border-radius:6px; padding:7px 13px; font-size:11px; color:#d7d8dc; white-space:nowrap; flex-shrink:0; align-self:flex-start; }
+.obss-emph .fd{ border-color:var(--green-500); box-shadow:0 0 0 1px var(--green-500); }
+.obss-recpath{ display:flex; gap:8px; align-items:center; }
+.obss-recpath .fd{ flex:1; }
+@media (max-width:600px){
+  .obss{ flex-direction:column; }
+  .obss-side{ width:100%; display:flex; overflow-x:auto; gap:4px; padding:8px; }
+  .obss-side .it{ border-radius:7px; flex-shrink:0; }
+}
+.gallery-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.gallery-2 > div{ min-width:0; }
+@media (max-width:760px){ .gallery-2{ grid-template-columns:1fr; } }
+
+/* checklist */
+.checklist{ display:flex; flex-direction:column; gap:10px; }
+.check-item{
+  display:flex; align-items:flex-start; gap:12px; padding:14px 18px;
+  background:var(--surface); border:1px solid var(--surface-line);
+  border-radius:var(--radius-md); cursor:pointer;
+  transition: background .15s var(--ease), border-color .15s var(--ease);
+}
+.check-item:hover{ border-color:var(--line-strong); }
+.check-item input{
+  appearance:none; -webkit-appearance:none; flex-shrink:0;
+  width:21px; height:21px; border-radius:7px; border:2px solid var(--line-strong);
+  margin-top:1px; display:grid; place-items:center; cursor:pointer;
+  background:#fff;
+}
+.check-item input::before{
+  content:''; width:11px; height:11px; border-radius:3px; background:var(--green-500);
+  transform:scale(0); transition:transform .12s var(--ease);
+}
+.check-item input:checked::before{ transform:scale(1); }
+.check-item input:checked{ border-color:var(--green-500); }
+.check-item span.txt{ font-size:14.5px; color:var(--ink-1); line-height:1.5; }
+.check-item.checked span.txt{ color:var(--ink-3); text-decoration:line-through; text-decoration-color:var(--line-strong); }
+.check-group-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
+.check-group-title{
+  font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; color:var(--ink-3);
+  text-transform:uppercase; letter-spacing:.09em;
+}
+.check-group-count{ font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--green-700); }
+.checklists-grid{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+@media (max-width:860px){ .checklists-grid{ grid-template-columns:1fr; gap:16px; } }
+
+/* slate / take card */
+.slate{
+  background:var(--ink); border-radius:var(--radius-lg); padding:28px 30px;
+  position:relative; overflow:hidden; color:#fff;
+}
+.slate::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:14px;
+  background-image: repeating-linear-gradient(-35deg, #fff 0 22px, var(--ink) 22px 44px);
+  opacity:.9;
+}
+.slate-inner{ margin-top:22px; }
+.slate .tag{ font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; color:var(--green-400); letter-spacing:.09em; }
+.slate .line{ font-size:17px; font-weight:700; margin-top:12px; line-height:1.6; }
+.slate .line .k{ color:var(--green-400); }
+.slate .examples{ margin-top:16px; display:flex; flex-direction:column; gap:8px; }
+.slate .ex{
+  font-family:'JetBrains Mono',monospace; font-size:13.5px; color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  padding:10px 14px; border-radius:9px;
+}
+
+/* steps (genuine sequence) */
+.steps{ display:flex; flex-direction:column; gap:0; }
+.step{
+  display:grid; grid-template-columns:44px 1fr; gap:18px;
+  padding:20px 0; border-bottom:1px dashed var(--surface-line);
+}
+.step:first-child{ padding-top:0; }
+.step:last-child{ border-bottom:0; }
+.step .num{
+  width:40px; height:40px; border-radius:12px; display:grid; place-items:center;
+  background:linear-gradient(135deg,var(--green-100),var(--green-200)); color:var(--green-700);
+  font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px;
+}
+.step .t{ font-weight:800; font-size:16.5px; margin:6px 0 5px; }
+.step .d{ font-size:14.5px; color:var(--ink-2); line-height:1.58; }
+
+/* script/quote caption style */
+.script-card{
+  background:var(--ink); border-radius:var(--radius-md); padding:18px 20px;
+  display:flex; gap:12px; align-items:flex-start;
+}
+.script-card .mic{ font-size:18px; flex-shrink:0; margin-top:1px; }
+.script-card p{ margin:0; color:#fff; font-size:14.5px; line-height:1.62; font-style:italic; }
+.script-card .who{ display:block; margin-top:9px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green-400); font-style:normal; letter-spacing:.06em; }
+
+/* avoid chips (vocabulário) */
+.avoid-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.avoid-card{
+  padding:22px; border-radius:var(--radius-md); background:var(--surface);
+  border:1px solid var(--surface-line);
+}
+.avoid-card .h{ display:flex; align-items:center; gap:9px; font-weight:800; font-size:15px; margin-bottom:12px; }
+.avoid-card .h .x{ width:23px; height:23px; border-radius:7px; background:var(--rose-100); color:var(--rose-700); display:grid; place-items:center; font-size:13px; font-weight:800; }
+.avoid-card ul{ margin:0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:9px; }
+.avoid-card li{ font-size:14.5px; color:var(--ink-1); line-height:1.5; padding-left:18px; position:relative; }
+.avoid-card li::before{ content:'—'; position:absolute; left:0; color:var(--rose-700); }
+@media (max-width:760px){ .avoid-grid{ grid-template-columns:1fr; } }
+
+/* video embeds */
+.video-wrap{ position:relative; width:100%; aspect-ratio:16/9; border-radius:var(--radius-lg); overflow:hidden; background:#000; box-shadow:var(--shadow-soft); }
+.video-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.video-card{ display:flex; flex-direction:column; gap:14px; }
+.video-meta{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+.video-title{ font-weight:800; font-size:16px; }
+.video-desc{ font-size:13.5px; color:var(--ink-2); margin-top:3px; }
+.video-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+@media (max-width:860px){ .video-grid{ grid-template-columns:1fr; gap:24px; } }
+
+/* reference/reading cards */
+.read-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.read-card{
+  padding:20px 22px; display:flex; flex-direction:column; gap:9px;
+  text-decoration:none; color:inherit;
+  transition:transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+.read-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-soft); }
+.read-card .src{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green-700); font-weight:700; letter-spacing:.05em; }
+.read-card .t{ font-weight:800; font-size:15.5px; line-height:1.35; }
+.read-card .d{ font-size:13.5px; color:var(--ink-2); line-height:1.5; }
+.read-card .go{ margin-top:auto; font-size:13px; font-weight:700; color:var(--ink); display:inline-flex; align-items:center; gap:5px; }
+@media (max-width:860px){ .read-grid{ grid-template-columns:1fr; } }
+
+/* ============ CLOSING SLIDE ============ */
+.close-slide{ background:var(--ink); color:#fff; padding:100px 0; text-align:center; }
+.close-slide .eyebrow{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16); color:#fff; margin:0 auto; width:fit-content; }
+.close-slide .e-dot{ background:linear-gradient(135deg,var(--green-400),var(--green-500)); }
+.close-title{
+  margin:26px auto 0; font-size:clamp(34px,5.4vw,58px); font-weight:800;
+  letter-spacing:-0.03em; line-height:1.06; max-width:16ch;
+}
+.close-lead{ margin:20px auto 0; font-size:17.5px; color:rgba(255,255,255,.65); max-width:52ch; line-height:1.6; }
+.close-cta{ margin-top:34px; }
+.close-meta{
+  margin:56px auto 0; display:inline-flex; gap:0; background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14); border-radius:22px; padding:6px;
+}
+.close-meta .item{ padding:14px 26px; text-align:left; }
+.close-meta .l{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green-400); letter-spacing:.06em; }
+.close-meta .v{ font-size:16px; font-weight:800; margin-top:5px; }
+.close-meta .sep{ width:1px; align-self:stretch; background:rgba(255,255,255,.14); margin:6px 0; }
+@media (max-width:640px){
+  .close-meta{ flex-direction:column; width:100%; }
+  .close-meta .sep{ display:none; }
+}
+
+/* context note — "why it matters" framing for reasoning/context text */
+.context-note{ border-left:3px solid var(--green-500); padding:2px 0 2px 20px; margin: 4px 0 30px; }
+.context-note .k{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--green-700); letter-spacing:.08em; display:block; margin-bottom:7px; }
+.context-note p{ margin:0; font-size:15px; color:var(--ink-1); line-height:1.68; max-width:70ch; }
+
+/* mini sub-section heading, used to break up enriched content within a slide */
+.mini-head{ font-size:19px; font-weight:800; letter-spacing:-0.01em; margin:0 0 12px; display:flex; align-items:center; gap:9px; }
+
+/* desk setup diagram card */
+.setup-card{ padding:28px; }
+.setup-card svg{ width:100%; height:auto; display:block; }
+.setup-cap{ font-size:13.5px; color:var(--ink-2); margin-top:14px; line-height:1.5; text-align:center; }
+
+/* framing layout mockup cards */
+.mockup-frame{ aspect-ratio:16/9; border-radius:var(--radius-md); overflow:hidden; position:relative; box-shadow:0 3px 10px -6px rgba(20,20,20,.12); }
+.mockup-cap{ margin-top:12px; }
+.mockup-cap .t{ font-weight:800; font-size:15.5px; }
+.mockup-cap .d{ font-size:13.5px; color:var(--ink-2); margin-top:4px; line-height:1.5; }
+
+/* lighting comparison cards */
+.light-card{ aspect-ratio:4/3; border-radius:var(--radius-md); overflow:hidden; position:relative; border:1.5px solid; }
+.light-card.good{ background:var(--green-50); border-color:var(--green-200); }
+.light-card.bad{ background:var(--rose-100); border-color:var(--rose-200); }
+.light-cap{ margin-top:11px; display:flex; align-items:center; gap:9px; font-weight:800; font-size:14.5px; }
+.light-tag{ width:21px; height:21px; border-radius:6px; display:grid; place-items:center; font-size:12px; font-weight:800; color:#fff; flex-shrink:0; }
+.light-tag.good{ background:var(--green-700); }
+.light-tag.bad{ background:var(--rose-700); }
+.light-result-label{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700; color:var(--ink-3); letter-spacing:.08em; margin:18px 0 8px; }
+.light-preview{ aspect-ratio:16/9; border-radius:var(--radius-md); overflow:hidden; box-shadow:0 3px 10px -6px rgba(20,20,20,.12); }
+.light-effects{ margin:12px 0 0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:7px; }
+.light-effects li{ font-size:13.5px; color:var(--ink-1); line-height:1.5; padding-left:16px; position:relative; }
+.light-effects li::before{ content:'—'; position:absolute; left:0; color:var(--ink-3); }
+footer{ padding:36px 0 56px; }
+.foot-grid{ display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.foot-note{ font-size:13px; color:var(--ink-3); max-width:52ch; }
+.foot-note a{ text-decoration:underline; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:860px){
+  .equip-grid{ grid-template-columns:1fr; }
+  .checklists-grid{ grid-template-columns:1fr; gap:14px; }
+}
+@media (max-width:480px){
+  .wrap{ padding:0 20px; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* accessible keyboard focus */
+a:focus-visible, button:focus-visible, .check-item input:focus-visible, .agenda-card:focus-visible{
+  outline: 2.5px solid var(--green-600);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+</style>
+</head>
+<body>
+<div class="bg-tex"></div>
+
+<main id="topo">
+
+  <!-- ============ COVER ============ -->
+  <section class="cover wrap">
+    <div class="cover-top">
+      <span class="brandmark">
+        <img src="data:image/png;base64,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" alt="Ada">
+        Ada <span class="pipe">·</span> <span class="tag">Gravação Remota</span>
+      </span>
+      <span class="rec-indicator"><span class="rec-dot"></span>REC</span>
+    </div>
+
+    <div class="cover-text">
+      <span class="eyebrow"><span class="e-dot"></span>Guia de produção · escritores e professores</span>
+      <h1>Gravações remotas, <span class="serif-em">no padrão Ada</span>.</h1>
+      <p class="lead">Tudo o que você precisa para gravar suas próprias aulas de casa: equipamentos, configuração do OBS, enquadramento, roteiro de abertura e encerramento, e uma checklist para consultar durante a gravação.</p>
+      <div class="cover-cta">
+        <a class="btn btn-primary" href="https://drive.google.com/file/d/1NgdFlp55fZmXEsbVkMCaGX9mlUV5ziVm/view?usp=sharing" target="_blank" rel="noopener">▶ Assistir ao treinamento completo</a>
+        <a class="btn btn-ghost" href="#agenda">Ver o guia</a>
+      </div>
+    </div>
+
+    <div class="cover-video">
+      <div class="viewfinder">
+        <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
+        <div class="vf-corner bl"></div><div class="vf-corner br"></div>
+        <div class="vf-inner">
+          <iframe src="https://drive.google.com/file/d/15PMVggJqFQz0BBlRG54f3PimCynNMDS2/preview" title="Vídeo-guia: Gravação Remota Ada" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+      <div class="vf-cap">
+        <span class="t">▶ Vídeo-guia: veja este material em ação antes de gravar</span>
+        <a href="https://drive.google.com/file/d/15PMVggJqFQz0BBlRG54f3PimCynNMDS2/view?usp=sharing" target="_blank" rel="noopener">Abrir no Drive →</a>
+      </div>
+    </div>
+
+    <div class="cover-stats">
+      <div class="cover-stat"><div class="v">25 min</div><div class="l">DURAÇÃO MÁXIMA</div></div>
+      <div class="cover-stat"><div class="v">1920×1080</div><div class="l">RESOLUÇÃO</div></div>
+      <div class="cover-stat"><div class="v">30 FPS</div><div class="l">TAXA DE QUADROS</div></div>
+      <div class="cover-stat"><div class="v">MP4</div><div class="l">FORMATO DE SAÍDA</div></div>
+    </div>
+  </section>
+
+  <!-- ============ AGENDA ============ -->
+  <section class="slide tint" id="agenda">
+    <div class="wrap">
+      <span class="s-eyebrow"><span class="e-dot"></span>Agenda</span>
+      <h2 class="s-title">O que vamos ver <span class="serif-em">neste guia</span>.</h2>
+      <div class="agenda-grid">
+        <a class="agenda-card" href="#formato">
+          <span class="agenda-num">01</span>
+          <div class="agenda-ttl">Formato &amp; Ferramentas</div>
+          <div class="agenda-tag">Duração, entrega e equipamentos</div>
+        </a>
+        <a class="agenda-card" href="#obs">
+          <span class="agenda-num">02</span>
+          <div class="agenda-ttl">Configurar o OBS</div>
+          <div class="agenda-tag">Layout, fontes e parâmetros de gravação</div>
+        </a>
+        <a class="agenda-card" href="#ambiente">
+          <span class="agenda-num">03</span>
+          <div class="agenda-ttl">Ambiente &amp; Enquadramento</div>
+          <div class="agenda-tag">Postura, cenário, luz, áudio e checklist</div>
+        </a>
+        <a class="agenda-card" href="#roteiro">
+          <span class="agenda-num">04</span>
+          <div class="agenda-ttl">Abertura &amp; Encerramento</div>
+          <div class="agenda-tag">A sequência de cada aula</div>
+        </a>
+        <a class="agenda-card" href="#vocabulario">
+          <span class="agenda-num">05</span>
+          <div class="agenda-ttl">Vocabulário &amp; Referências</div>
+          <div class="agenda-tag">O que evitar, ritmo de fala e vídeos de estilo</div>
+        </a>
+        <a class="agenda-card" href="#saiba-mais">
+          <span class="agenda-num">06</span>
+          <div class="agenda-ttl">Para saber mais</div>
+          <div class="agenda-tag">Leituras complementares</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 01 · FORMATO & FERRAMENTAS ============ -->
+  <section class="slide" id="formato">
+    <span class="slide-mark">01 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>O que é a aula, e o que você precisa</span>
+        <h2 class="s-title">Formato <span class="serif-em">e</span> ferramentas.</h2>
+        <p class="s-sub">Um bloco curto de conteúdo, gravado com o essencial — nada disso exige um estúdio.</p>
+      </div>
+      <div class="s-body two-col">
+        <div class="meta-stack">
+          <div class="meta-row">
+            <span class="ic">⏱️</span>
+            <span><span class="nm">Até 25 minutos por aula</span><span class="ds">Com interação de tela (slides ou demonstração de código ao vivo). O conteúdo específico varia de curso para curso.</span></span>
+          </div>
+          <div class="meta-row">
+            <span class="ic">📂</span>
+            <span><span class="nm">Entrega na pasta do Drive</span><span class="ds">Insira os vídeos na pasta informada pelo time Ada no momento da alocação.</span></span>
+          </div>
+          <div class="meta-row">
+            <span class="ic">🏷️</span>
+            <span><span class="nm">Título das aulas</span><span class="ds">Informe o título em um arquivo à parte ou diretamente no nome do arquivo de vídeo.</span></span>
+          </div>
+        </div>
+        <div class="equip-col">
+          <div class="equip-card card">
+            <span class="equip-icon">🎥</span>
+            <span class="equip-name">Vídeo</span>
+            <span class="equip-desc">Celular, webcam externa ou a webcam do próprio computador — de preferência em Full HD.</span>
+          </div>
+          <div class="equip-card card sky">
+            <span class="equip-icon">🎙️</span>
+            <span class="equip-name">Áudio</span>
+            <span class="equip-desc">Headset, fone de ouvido com microfone ou microfone externo.</span>
+          </div>
+          <div class="equip-card card amber">
+            <span class="equip-icon">💡</span>
+            <span class="equip-name">Iluminação</span>
+            <span class="equip-desc">Ring light em tamanho padrão, posicionada de frente para o rosto.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 02 · OBS ============ -->
+  <section class="slide tint" id="obs">
+    <span class="slide-mark">02 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>Software</span>
+        <h2 class="s-title">Configurando o <span class="serif-em">OBS Studio</span>.</h2>
+        <p class="s-sub">O OBS grava a tela do computador, o áudio e a imagem da câmera de forma sincronizada. Se preferir usar o celular como câmera, o OBS pode ficar responsável só pela tela + áudio, e o vídeo do celular é enviado separadamente.</p>
+      </div>
+      <div class="s-body">
+
+        <div class="video-card" style="margin-bottom:22px;">
+          <div class="video-wrap">
+            <iframe src="https://drive.google.com/file/d/1zgJM0sUBtXzV-IuUdikMmfObkNOdO22A/preview" title="Configurando o OBS Studio — vídeo resumido" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-meta">
+            <div>
+              <div class="video-title">▶ Configurando o OBS Studio · vídeo resumido</div>
+              <div class="video-desc">Só a parte que importa: passo a passo direto da configuração do OBS.</div>
+            </div>
+            <a class="link-btn ghost" href="https://drive.google.com/file/d/1zgJM0sUBtXzV-IuUdikMmfObkNOdO22A/view?usp=sharing" target="_blank" rel="noopener">Abrir no Drive <span class="ar">→</span></a>
+          </div>
+        </div>
+
+        <div class="card" style="padding:20px 22px; margin-bottom:38px;">
+          <div class="video-meta">
+            <div>
+              <div class="video-title">▶ Treinamento com conteudistas · direcionamentos e OBS</div>
+              <div class="video-desc">Passo a passo completo sobre as diretrizes de gravação e a configuração do OBS, com espaço para dúvidas.</div>
+            </div>
+            <a class="link-btn ghost" href="https://drive.google.com/file/d/1NgdFlp55fZmXEsbVkMCaGX9mlUV5ziVm/view?usp=sharing" target="_blank" rel="noopener">Abrir no Drive <span class="ar">→</span></a>
+          </div>
+        </div>
+
+        <p style="font-size:15.5px; color:var(--ink-1); line-height:1.65; margin:0 0 22px;">
+          Baixe o layout oficial de videoaula da Ada e configure-o no OBS para acomodar suas fontes de vídeo.
+          Seguindo o tutorial acima, posicione câmera e tela nos espaços indicados mantendo a hierarquia abaixo — e confira se o ajuste de tela não está cortando nenhum elemento essencial.
+        </p>
+        <a class="link-btn" href="https://zeroheight.com/050992008/p/205394-materiais/b/35473a" target="_blank" rel="noopener">Layout de videoaula da Ada (zeroheight) <span class="ar">→</span></a>
+
+        <div class="gallery-2" style="margin-top:26px;">
+          <div>
+            <div class="obsp obs-dark">
+              <div class="obsp-header"><span class="oi oi-layers oi-14"></span>Fontes</div>
+              <div class="obsp-list">
+                <div class="obsp-item"><span class="nm"><span class="oi oi-image oi-16"></span>Imagem</span><span class="icons"><span class="oi oi-eye oi-16"></span><span class="oi oi-unlock oi-14"></span></span></div>
+                <div class="obsp-item"><span class="nm"><span class="oi oi-monitorstand oi-16"></span>Captura de tela do macOS</span><span class="icons"><span class="oi oi-eye oi-16"></span><span class="oi oi-unlock oi-14"></span></span></div>
+                <div class="obsp-item"><span class="nm"><span class="oi oi-camera oi-16"></span>Dispositivo de captura de vídeo (Câmera)</span><span class="icons"><span class="oi oi-eye oi-16"></span><span class="oi oi-unlock oi-14"></span></span></div>
+              </div>
+              <div class="obsp-empty"></div>
+              <div class="obsp-toolbar">
+                <span class="obsp-tbtn foc"><span class="oi oi-plus oi-13"></span></span>
+                <span class="obsp-tbtn"><span class="oi oi-trash oi-13"></span></span>
+                <span class="obsp-sep"></span>
+                <span class="obsp-tbtn"><span class="oi oi-gear oi-13"></span></span>
+                <span class="obsp-sep"></span>
+                <span class="obsp-tbtn"><span class="oi oi-chevup oi-13"></span></span>
+                <span class="obsp-tbtn"><span class="oi oi-chevdown oi-13"></span></span>
+              </div>
+            </div>
+            <p class="shot-cap"><b>Hierarquia de fontes.</b> No painel “Fontes” do OBS, a ordem de cima para baixo define o que fica na frente: logo/imagem no topo, tela do computador no meio, câmera por último.</p>
+          </div>
+          <div>
+            <div class="shot">
+              <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+              <img src="data:image/jpeg;base64,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" alt="Exemplo de composição final: tela do computador em destaque, câmera do instrutor em miniatura no canto superior direito e logo da Ada no canto inferior">
+            </div>
+            <p class="shot-cap"><b>Composição final.</b> Tela em destaque, câmera do instrutor em miniatura no canto e logo da Ada sempre visível — o padrão que o layout do zeroheight já deixa pronto.</p>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:28px;">
+          <span class="ic">⚠️</span>
+          <div>
+            <b>Importante: confira os parâmetros de gravação antes de começar</b>
+            <p>Esses ajustes ficam nas configurações de Vídeo e Saída do OBS (vide 8:50 do tutorial).</p>
+            <div class="specs">
+              <span class="spec-chip">Resolução 1920×1080</span>
+              <span class="spec-chip">30 FPS</span>
+              <span class="spec-chip">Formato MP4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-2" style="margin-top:24px;">
+          <div>
+            <div class="obss obs-dark">
+              <div class="obss-side">
+                <div class="it"><span class="oi oi-gear oi-14"></span>Geral</div>
+                <div class="it"><span class="oi oi-antenna oi-14"></span>Transmissão</div>
+                <div class="it"><span class="oi oi-dualmonitor oi-14"></span>Saída</div>
+                <div class="it"><span class="oi oi-speaker oi-14"></span>Áudio</div>
+                <div class="it on"><span class="oi oi-monitor oi-14"></span>Vídeo</div>
+                <div class="it"><span class="oi oi-keyboard oi-14"></span>Teclas de atalho</div>
+                <div class="it"><span class="oi oi-accessibility oi-14"></span>Acessibilidade</div>
+                <div class="it"><span class="oi oi-tools oi-14"></span>Avançado</div>
+              </div>
+              <div class="obss-main">
+                <div class="obss-row">
+                  <span class="lb">Resolução de Base (tela)</span>
+                  <span class="fd"><span>1920x1080</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                  <span class="hint">Proporção da tela 16:9</span>
+                </div>
+                <div class="obss-row">
+                  <span class="lb">Resolução de saída (escala)</span>
+                  <span class="fd"><span>1920x1080</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                  <span class="hint">Proporção da tela 16:9</span>
+                </div>
+                <div class="obss-row">
+                  <span class="lb">Filtro de redução</span>
+                  <span class="fd"><span>(Resoluções correspondem, não é necessária uma redução de escala)</span></span>
+                </div>
+                <div class="obss-row obss-emph">
+                  <span class="lb">Valores comuns de FPS</span>
+                  <span class="fd"><span>30</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+              </div>
+            </div>
+            <p class="shot-cap"><b>Aba Vídeo.</b> Resolução base e de saída em 1920×1080, FPS em 30.</p>
+          </div>
+          <div>
+            <div class="obss obs-dark">
+              <div class="obss-side">
+                <div class="it"><span class="oi oi-gear oi-14"></span>Geral</div>
+                <div class="it"><span class="oi oi-antenna oi-14"></span>Transmissão</div>
+                <div class="it on"><span class="oi oi-dualmonitor oi-14"></span>Saída</div>
+                <div class="it"><span class="oi oi-speaker oi-14"></span>Áudio</div>
+                <div class="it"><span class="oi oi-monitor oi-14"></span>Vídeo</div>
+                <div class="it"><span class="oi oi-keyboard oi-14"></span>Teclas de atalho</div>
+                <div class="it"><span class="oi oi-accessibility oi-14"></span>Acessibilidade</div>
+                <div class="it"><span class="oi oi-tools oi-14"></span>Avançado</div>
+              </div>
+              <div class="obss-main">
+                <div class="obss-row">
+                  <span class="lb">Modo de saída</span>
+                  <span class="fd"><span>Simples</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-row">
+                  <span class="lb">Codificador de Áudio</span>
+                  <span class="fd"><span>AAC (Padrão)</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-section">Gravação</div>
+                <div class="obss-row">
+                  <span class="lb">Caminho de gravação</span>
+                  <span class="obss-recpath"><span class="fd"><span>/Users/conteudo/Desktop</span></span><span class="obss-btn-sm">Explorar</span></span>
+                </div>
+                <div class="obss-check"><span class="cb"></span>Gerar nome de arquivo sem espaços</div>
+                <div class="obss-row">
+                  <span class="lb">Qualidade de gravação</span>
+                  <span class="fd"><span>Qualidade alta, arquivo normal</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-row obss-emph">
+                  <span class="lb">Formato de gravação</span>
+                  <span class="fd"><span>MP4 (.mp4)</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-row">
+                  <span class="lb">Encoder de Vídeo</span>
+                  <span class="fd"><span>Hardware (Apple, H.264)</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-row">
+                  <span class="lb">Encoder de Áudio</span>
+                  <span class="fd"><span>AAC (Padrão)</span><span class="oi oi-chevdown car" style="width:9px;height:9px;background-color:#7d7f89;"></span></span>
+                </div>
+                <div class="obss-tracks">
+                  <span class="lb" style="width:auto;">Faixa de Áudio</span>
+                  <span class="obss-track"><span class="cb on"><span class="oi oi-check" style="width:9px;height:9px;"></span></span>1</span>
+                  <span class="obss-track"><span class="cb"></span>2</span>
+                  <span class="obss-track"><span class="cb"></span>3</span>
+                  <span class="obss-track"><span class="cb"></span>4</span>
+                  <span class="obss-track"><span class="cb"></span>5</span>
+                  <span class="obss-track"><span class="cb"></span>6</span>
+                </div>
+                <div class="obss-check"><span class="cb"></span>Ativar buffer de repetição</div>
+              </div>
+            </div>
+            <p class="shot-cap"><b>Aba Saída.</b> Formato de gravação definido como MP4.</p>
+          </div>
+        </div>
+
+        <div class="meta-row" style="margin-top:24px;">
+          <span class="ic">⬇️</span>
+          <span><span class="nm">Baixar o OBS Studio</span><span class="ds">Programa gratuito e de código aberto, disponível para Windows, macOS e Linux — <a href="https://obsproject.com/download" target="_blank" rel="noopener" style="text-decoration:underline;">obsproject.com/download</a>.</span></span>
+        </div>
+
+        <div class="callout" style="margin-top:16px; border-color:var(--green-200); background:linear-gradient(135deg,#fff,var(--green-50));">
+          <span class="ic">🎬</span>
+          <div>
+            <b>Antes de gravar o curso todo, grave uma demo de 2 minutos</b>
+            <p>Com câmera, áudio e OBS configurados, grave um teste curto (2 min) mostrando seu enquadramento e a qualidade do áudio, e envie para o time Ada validar. É mais rápido ajustar algo agora do que refazer aulas inteiras depois.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 03 · AMBIENTE ============ -->
+  <section class="slide" id="ambiente">
+    <span class="slide-mark">03 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>Direcionamentos gerais</span>
+        <h2 class="s-title">Ambiente, <span class="serif-em">enquadramento</span> e postura.</h2>
+        <p class="s-sub">Cuidado com o ambiente ao fundo: evite um espaço bagunçado, desorganizado ou que chame mais atenção do que o próprio conteúdo da aula.</p>
+      </div>
+      <div class="s-body">
+
+        <div class="two-col" style="align-items:center; margin-bottom:36px;">
+          <div>
+            <div class="shot" style="background:#fff;">
+              <svg viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Guia de enquadramento com grade de regra dos terços: cabeça e ombros centralizados, olhos próximos à linha superior da grade">
+                <rect width="480" height="270" fill="#fff"/>
+                <line x1="160" y1="0" x2="160" y2="270" stroke="#B3F2A9" stroke-width="2"/>
+                <line x1="320" y1="0" x2="320" y2="270" stroke="#B3F2A9" stroke-width="2"/>
+                <line x1="0" y1="90" x2="480" y2="90" stroke="#B3F2A9" stroke-width="2"/>
+                <line x1="0" y1="180" x2="480" y2="180" stroke="#B3F2A9" stroke-width="2"/>
+                <circle cx="240" cy="118" r="58" fill="#141414"/>
+                <path d="M148 270c14-62 68-88 92-88s78 26 92 88" fill="#141414"/>
+                <circle cx="160" cy="90" r="9" fill="#29C947"/>
+                <circle cx="320" cy="90" r="9" fill="#29C947"/>
+                <circle cx="160" cy="180" r="9" fill="#29C947"/>
+                <circle cx="320" cy="180" r="9" fill="#29C947"/>
+              </svg>
+            </div>
+            <p class="shot-cap"><b>Enquadramento de referência.</b> Cabeça e ombros centralizados, com os olhos próximos à linha superior da grade.</p>
+          </div>
+          <div>
+            <p style="font-size:15.5px; color:var(--ink-1); line-height:1.7; margin:0;">
+              Atente-se à câmera e ao seu posicionamento, mantendo esse enquadramento. Use camiseta branca ou preta, sem estampas — assim nada disputa atenção com o conteúdo da tela.
+            </p>
+          </div>
+        </div>
+
+        <div class="context-note">
+          <span class="k">POR QUE ISSO IMPORTA</span>
+          <p>Enquadramento, luz e áudio não são só estética — são o que decide se quem assiste consegue prestar atenção no conteúdo ou se distrai tentando entender o que está vendo ou ouvindo. Entender o porquê de cada escolha ajuda a se adaptar quando o seu espaço em casa não é exatamente igual ao ideal.</p>
+        </div>
+
+        <h3 class="mini-head">🖥️ Como organizar sua mesa</h3>
+        <p style="font-size:15px; color:var(--ink-1); line-height:1.65; margin:0 0 18px; max-width:70ch;">
+          Um jeito simples de visualizar onde cada equipamento entra: o monitor (com a webcam) na sua frente, na altura dos olhos; o ring light entre você e a tela, iluminando o rosto; e uma distância confortável para enxergar bem a tela sem se aproximar demais da câmera.
+        </p>
+        <div class="card setup-card">
+          <svg viewBox="0 65 640 195" xmlns="http://www.w3.org/2000/svg">
+            <text x="220" y="95" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11" fill="#9a9686" font-weight="700">altura dos olhos</text>
+            <line x1="150" y1="110" x2="433" y2="110" stroke="#D8D2BF" stroke-width="1.3" stroke-dasharray="3 4"/>
+            <circle cx="150" cy="110" r="26" fill="#141414"/>
+            <path d="M115 175c8-22 29-31 35-31s27 9 35 31" fill="#141414"/>
+            <text x="150" y="205" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13.5" font-weight="800" fill="#141414">Você</text>
+            <circle cx="290" cy="110" r="22" fill="none" stroke="#F5DFA0" stroke-width="6"/>
+            <circle cx="290" cy="110" r="22" fill="none" stroke="#7A5B00" stroke-width="1.2"/>
+            <text x="290" y="150" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13.5" font-weight="800" fill="#7A5B00">Ring light</text>
+            <text x="290" y="167" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11.5" fill="#8a6c1a">de frente pro rosto</text>
+            <rect x="420" y="100" width="26" height="20" rx="4" fill="#141414"/>
+            <circle cx="433" cy="110" r="5" fill="#5BE066"/>
+            <text x="433" y="150" text-anchor="middle" font-family="Manrope, sans-serif" font-size="13.5" font-weight="800" fill="#141414">Monitor</text>
+            <text x="433" y="167" text-anchor="middle" font-family="Manrope, sans-serif" font-size="11.5" fill="#54534A">+ webcam</text>
+            <line x1="255" y1="195" x2="470" y2="195" stroke="#C9C2AD" stroke-width="2"/>
+            <text x="362" y="212" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a8776" font-weight="700" letter-spacing="0.5">SUA MESA</text>
+            <line x1="150" y1="230" x2="433" y2="230" stroke="#0A6E1D" stroke-width="1.3"/>
+            <line x1="150" y1="224" x2="150" y2="236" stroke="#0A6E1D" stroke-width="1.3"/>
+            <line x1="433" y1="224" x2="433" y2="236" stroke="#0A6E1D" stroke-width="1.3"/>
+            <rect x="242" y="220" width="100" height="20" fill="#fff"/>
+            <text x="292" y="234" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#0A6E1D" font-weight="700">50–70 cm</text>
+          </svg>
+          <p class="setup-cap">Distância de referência entre você e a tela — ajuste conforme o tamanho do seu monitor.</p>
+        </div>
+
+        <h3 class="mini-head" style="margin-top:36px;">🎬 Câmera cheia ou tela + câmera?</h3>
+        <p style="font-size:15px; color:var(--ink-1); line-height:1.65; margin:0 0 18px; max-width:70ch;">
+          A escolha do enquadramento muda de acordo com o momento da aula — e isso já se conecta com a sequência de abertura e encerramento que vem a seguir.
+        </p>
+        <div class="gallery-2">
+          <div>
+            <div class="mockup-frame">
+              <svg viewBox="0 0 320 180" width="100%" height="100%" style="position:absolute;inset:0;display:block;">
+                <rect width="320" height="180" fill="#1c1e26"/>
+                <circle cx="160" cy="78" r="34" fill="#3a3d4a"/>
+                <path d="M110 150c10-28 38-40 50-40s40 12 50 40" fill="#3a3d4a"/>
+                <circle cx="160" cy="78" r="34" fill="none" stroke="#5BE066" stroke-width="1.5" stroke-dasharray="3 3"/>
+              </svg>
+            </div>
+            <div class="mockup-cap">
+              <div class="t">Câmera em tela cheia</div>
+              <div class="d">Abertura, saudação e despedida — quando o foco é você falando diretamente com quem assiste.</div>
+            </div>
+          </div>
+          <div>
+            <div class="mockup-frame">
+              <svg viewBox="0 0 320 180" width="100%" height="100%" style="position:absolute;inset:0;display:block;">
+                <rect width="320" height="180" fill="#0e2f22"/>
+                <rect x="16" y="16" width="180" height="10" rx="3" fill="#2e6b4d"/>
+                <rect x="16" y="36" width="120" height="10" rx="3" fill="#2e6b4d"/>
+                <rect x="16" y="56" width="150" height="10" rx="3" fill="#2e6b4d"/>
+                <rect x="16" y="86" width="90" height="10" rx="3" fill="#245c40"/>
+                <rect x="16" y="106" width="130" height="10" rx="3" fill="#245c40"/>
+                <circle cx="270" cy="132" r="34" fill="#141414" stroke="#5BE066" stroke-width="2"/>
+                <circle cx="270" cy="126" r="12" fill="#3a3d4a"/>
+                <path d="M250 150c4-10 14-16 20-16s16 6 20 16" fill="#3a3d4a"/>
+              </svg>
+            </div>
+            <div class="mockup-cap">
+              <div class="t">Tela + câmera no canto</div>
+              <div class="d">Demonstrações de código ou slides — a tela ganha espaço e você continua visível no canto.</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="mini-head" style="margin-top:36px;">💡 Iluminação: o essencial, sem gastar nada</h3>
+        <p style="font-size:15px; color:var(--ink-1); line-height:1.65; margin:0 0 18px; max-width:70ch;">
+          O padrão profissional usa três pontos de luz: uma <b>principal</b> na frente, uma de <b>preenchimento</b> que suaviza sombras, e uma de <b>contraluz</b> que separa você do fundo. Em casa, dá pra simplificar bastante: o ring light já cumpre o papel de luz principal, e a luz natural de uma janela na sua frente ajuda como preenchimento.
+        </p>
+        <div class="gallery-2" style="margin-bottom:8px;">
+          <div>
+            <div class="light-card good">
+              <svg viewBox="0 0 400 260" width="100%" height="100%">
+                <rect x="300" y="20" width="70" height="90" rx="4" fill="#fff" stroke="#B3F2A9" stroke-width="3"/>
+                <line x1="335" y1="20" x2="335" y2="110" stroke="#B3F2A9" stroke-width="3"/>
+                <line x1="300" y1="65" x2="370" y2="65" stroke="#B3F2A9" stroke-width="3"/>
+                <line x1="230" y1="90" x2="290" y2="60" stroke="#5BE066" stroke-width="2" stroke-dasharray="4 4"/>
+                <line x1="220" y1="115" x2="290" y2="85" stroke="#5BE066" stroke-width="2" stroke-dasharray="4 4"/>
+                <line x1="230" y1="140" x2="290" y2="150" stroke="#5BE066" stroke-width="2" stroke-dasharray="4 4"/>
+                <circle cx="150" cy="115" r="30" fill="#141414"/>
+                <path d="M115 185c9-25 33-36 35-36s26 11 35 36" fill="#141414"/>
+                <rect x="300" y="130" width="30" height="24" rx="4" fill="#141414"/>
+                <circle cx="315" cy="142" r="6" fill="#5BE066"/>
+              </svg>
+            </div>
+            <div class="light-cap"><span class="light-tag good">✓</span>De frente para a janela</div>
+
+            <div class="light-result-label">O QUE A CÂMERA CAPTA</div>
+            <div class="light-preview">
+              <svg viewBox="0 0 400 225" width="100%" height="100%">
+                <rect width="400" height="225" fill="#E9E4D6"/>
+                <rect x="30" y="20" width="90" height="60" rx="3" fill="#DCD5C2"/>
+                <rect x="280" y="130" width="90" height="70" rx="3" fill="#DCD5C2"/>
+                <defs>
+                  <radialGradient id="faceGoodGrad" cx="50%" cy="40%" r="65%">
+                    <stop offset="0%" stop-color="#5c5c5c"/>
+                    <stop offset="100%" stop-color="#1c1c1c"/>
+                  </radialGradient>
+                </defs>
+                <circle cx="200" cy="105" r="50" fill="url(#faceGoodGrad)"/>
+                <path d="M138 210c15-42 55-60 62-60s47 18 62 60" fill="url(#faceGoodGrad)"/>
+              </svg>
+            </div>
+            <ul class="light-effects">
+              <li>Imagem mais clara e uniforme</li>
+              <li>Rosto nítido, com boa definição</li>
+              <li>Melhor contraste e sombras mínimas</li>
+            </ul>
+          </div>
+          <div>
+            <div class="light-card bad">
+              <svg viewBox="0 0 400 260" width="100%" height="100%">
+                <rect x="30" y="20" width="70" height="90" rx="4" fill="#fff" stroke="#F3C7BC" stroke-width="3"/>
+                <line x1="65" y1="20" x2="65" y2="110" stroke="#F3C7BC" stroke-width="3"/>
+                <line x1="30" y1="65" x2="100" y2="65" stroke="#F3C7BC" stroke-width="3"/>
+                <line x1="100" y1="65" x2="150" y2="95" stroke="#E4574B" stroke-width="2" stroke-dasharray="4 4"/>
+                <line x1="100" y1="90" x2="150" y2="110" stroke="#E4574B" stroke-width="2" stroke-dasharray="4 4"/>
+                <line x1="100" y1="115" x2="150" y2="130" stroke="#E4574B" stroke-width="2" stroke-dasharray="4 4"/>
+                <circle cx="150" cy="115" r="30" fill="#141414"/>
+                <path d="M115 185c9-25 33-36 35-36s26 11 35 36" fill="#141414"/>
+                <rect x="300" y="130" width="30" height="24" rx="4" fill="#141414"/>
+                <circle cx="315" cy="142" r="6" fill="#8E2A17"/>
+              </svg>
+            </div>
+            <div class="light-cap"><span class="light-tag bad">✕</span>De costas para a janela</div>
+
+            <div class="light-result-label">O QUE A CÂMERA CAPTA</div>
+            <div class="light-preview">
+              <svg viewBox="0 0 400 225" width="100%" height="100%">
+                <defs>
+                  <radialGradient id="glare" cx="50%" cy="45%" r="75%">
+                    <stop offset="0%" stop-color="#fffef8"/>
+                    <stop offset="100%" stop-color="#f5efd8"/>
+                  </radialGradient>
+                </defs>
+                <rect width="400" height="225" fill="url(#glare)"/>
+                <circle cx="200" cy="105" r="50" fill="#0a0a0a"/>
+                <path d="M138 210c15-42 55-60 62-60s47 18 62 60" fill="#0a0a0a"/>
+              </svg>
+            </div>
+            <ul class="light-effects">
+              <li>Fundo estourado, excessivamente claro</li>
+              <li>Rosto escurecido, mais sombras</li>
+              <li>Perda significativa de detalhes</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size:13.5px; color:var(--ink-3); margin:14px 0 0; max-width:70ch;">A câmera é a mesma nos dois casos — sempre na frente de quem grava. O que muda é o lado da janela.</p>
+        <div class="callout" style="margin-top:22px;">
+          <span class="ic">⚠️</span>
+          <div>
+            <b>Nunca fique de costas para uma janela ou fonte de luz forte</b>
+            <p>A câmera vai expor a luz de fundo e deixar seu rosto escuro (contraluz), dificultando a leitura da sua expressão.</p>
+          </div>
+        </div>
+
+        <h3 class="mini-head" style="margin-top:36px;">🎙️ Áudio: mais importante do que parece</h3>
+        <p style="font-size:15px; color:var(--ink-1); line-height:1.65; margin:0 0 18px; max-width:70ch;">
+          Um áudio ruim cansa quem assiste mais do que uma imagem imperfeita. Se estiver usando headset ou fone com microfone, mantenha-o a poucos centímetros da boca, levemente de lado — não direto na frente — para evitar estouros em sons como "p" e "b". Com microfone externo de mesa, a distância ideal fica entre 15 e 30 cm.
+        </p>
+        <div class="meta-stack">
+          <div class="meta-row sky">
+            <span class="ic">🔇</span>
+            <span><span class="nm">Ambiente com o mínimo de eco possível</span><span class="ds">Cortinas, tapetes e estofados ajudam a absorver o som e evitam aquele efeito de "sala vazia".</span></span>
+          </div>
+          <div class="meta-row sky">
+            <span class="ic">✅</span>
+            <span><span class="nm">Teste antes de gravar de verdade</span><span class="ds">Grave 10 segundos, ouça de fone e confirme volume e clareza antes de começar a aula.</span></span>
+          </div>
+        </div>
+
+        <h3 class="mini-head" style="margin-top:36px;">✅ Checklist rápido</h3>
+        <div class="checklists-grid">
+          <div>
+            <div class="check-group-head">
+              <span class="check-group-title">Antes de gravar</span>
+              <span class="check-group-count" data-count-for="antes"></span>
+            </div>
+            <div class="checklist" data-group="antes">
+              <label class="check-item"><input type="checkbox" data-id="amb-1"><span class="txt">Ambiente organizado, sem elementos que chamem mais atenção que a aula</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-2"><span class="txt">Câmera posicionada e enquadramento conferido</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-3"><span class="txt">Camiseta lisa, branca ou preta, sem estampas</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-4"><span class="txt">Água por perto</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-5"><span class="txt">Links, documentos e materiais da aula abertos e de fácil acesso</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-6"><span class="txt">Celular em modo silencioso e alertas do computador pausados</span></label>
+              <label class="check-item"><input type="checkbox" data-id="amb-7"><span class="txt">Abas e programas não essenciais fechados; barra de tarefas oculta, se possível</span></label>
+            </div>
+          </div>
+          <div>
+            <div class="check-group-head">
+              <span class="check-group-title">Durante a gravação</span>
+              <span class="check-group-count" data-count-for="durante"></span>
+            </div>
+            <div class="checklist" data-group="durante">
+              <label class="check-item"><input type="checkbox" data-id="dur-1"><span class="txt">Beba água antes de começar e nas pausas — nunca no meio de uma fala</span></label>
+              <label class="check-item"><input type="checkbox" data-id="dur-2"><span class="txt">Ao pausar: termine o raciocínio, respire 2s, aguarde mais 2s antes de voltar a falar</span></label>
+              <label class="check-item"><input type="checkbox" data-id="dur-3"><span class="txt">Abra cada gravação com a marcação em voz alta (veja abaixo) e uma palma</span></label>
+              <label class="check-item"><input type="checkbox" data-id="dur-4"><span class="txt">Só pare de gravar ao fim da aula, ou se for estritamente necessário</span></label>
+              <label class="check-item"><input type="checkbox" data-id="dur-5"><span class="txt">Mantenha um tom de voz animado do início ao fim</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="slate" style="margin-top:32px;">
+          <div class="slate-inner">
+            <span class="tag">MARCAÇÃO DE INÍCIO</span>
+            <p class="line">Diga em voz alta o <span class="k">nome do curso</span> + <span class="k">número da aula</span> + <span class="k">número do take</span> e bata uma palma. Isso organiza os arquivos na pós-produção e marca o sincronismo de áudio e imagem, se precisar ajustá-lo.</p>
+            <div class="examples">
+              <div class="ex">🎬 "Introdução ao Python, aula 2, take 1! 👏"</div>
+              <div class="ex">🎬 "Conteinerização com Docker, aula 1, take 2! 👏"</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 04 · ROTEIRO ============ -->
+  <section class="slide tint" id="roteiro">
+    <span class="slide-mark">04 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>Abertura e encerramento</span>
+        <h2 class="s-title">A <span class="serif-em">sequência</span> de cada aula.</h2>
+        <p class="s-sub">É desejável que os trechos "não didáticos" (1, 2, 4 e 5) sejam breves e objetivos — apenas para situar quem estiver assistindo e conectar as partes do vídeo. Não deixe de abordar o essencial, mas quanto mais sucinto, melhor.</p>
+      </div>
+      <div class="s-body">
+
+        <div class="steps">
+          <div class="step">
+            <span class="num">01</span>
+            <div><div class="t">Saudação</div><div class="d">Recepcione o espectador. Evite marcações de tempo e gênero (nada de "Bom dia, boa tarde/noite" ou "Seja bem-vindo(a)").</div></div>
+          </div>
+          <div class="step">
+            <span class="num">02</span>
+            <div><div class="t">O que o aluno vai aprender — e por quê</div><div class="d">Elenque os principais tópicos daquele vídeo antes de seguir com o roteiro preparado.</div></div>
+          </div>
+          <div class="step">
+            <span class="num">03</span>
+            <div><div class="t">Iniciar a aula</div><div class="d">O conteúdo principal, no roteiro já definido para o curso.</div></div>
+          </div>
+          <div class="step">
+            <span class="num">04</span>
+            <div><div class="t">Encerramento</div><div class="d">Elenque os principais tópicos da aula e os pontos importantes para o aluno sempre ter em mente.</div></div>
+          </div>
+          <div class="step">
+            <span class="num">05</span>
+            <div><div class="t">Despedida breve</div><div class="d">Um fechamento curto, sem alongar. Ex.: "Por hoje é só. Te vejo em uma próxima oportunidade."</div></div>
+          </div>
+        </div>
+
+        <div class="gallery-2" style="margin-top:32px; align-items:start;">
+          <div class="script-card">
+            <span class="mic">🎙️</span>
+            <div>
+              <p>"Olá pessoal! Nesta aula iremos conhecer um pouco mais sobre o conceito de Machine Learning. Entendendo quais são as suas principais bases, porque e quando criar um modelo, e como qualificá-los."</p>
+              <span class="who">ABERTURA · aula de meio de curso</span>
+            </div>
+          </div>
+          <div class="script-card">
+            <span class="mic">🎙️</span>
+            <div>
+              <p>"Chegamos assim ao fim do nosso curso de Engenharia vs Ciência de Dados. Agora você entende quais são as principais diferenças entre estes campos de atuação, os desafios e responsabilidades de cada profissional da área, além de algumas das ferramentas mais comuns nas suas respectivas rotinas. Eu me despeço aqui, muito obrigado e nos vemos em uma próxima oportunidade!"</p>
+              <span class="who">ENCERRAMENTO · última aula do curso</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-stack" style="margin-top:24px;">
+          <div class="meta-row">
+            <span class="ic">👋</span>
+            <span><span class="nm">Apresentação só na primeira aula</span><span class="ds">Diga seu nome, a qual trilha pertence e o intuito do curso. Não é preciso se apresentar de novo nas demais aulas.</span></span>
+          </div>
+          <div class="meta-row sky">
+            <span class="ic">🔗</span>
+            <span><span class="nm">Evite conectar as aulas durante a gravação</span><span class="ds">Assim, uma aula pode ser reaproveitada em mais de uma trilha, se fizer sentido.</span></span>
+          </div>
+          <div class="meta-row amber">
+            <span class="ic">🏁</span>
+            <span><span class="nm">Última aula do curso: encerre sem conectar a outros conteúdos</span><span class="ds">Recapitule brevemente e de maneira geral, e deseje uma boa jornada ao aluno.</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 05 · VOCABULÁRIO & REFERÊNCIAS ============ -->
+  <section class="slide" id="vocabulario">
+    <span class="slide-mark">05 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>Vocabulário &amp; referências</span>
+        <h2 class="s-title">O que <span class="serif-em">evitar</span> — e o que inspira.</h2>
+      </div>
+      <div class="s-body">
+        <div class="avoid-grid">
+          <div class="avoid-card">
+            <div class="h"><span class="x">✕</span>Gírias e termos depreciativos</div>
+            <ul>
+              <li>Não utilize gírias, palavrões ou expressões depreciativas.</li>
+              <li>Exemplos a evitar: "judiar", "denegrir", "fazer nas coxas".</li>
+            </ul>
+          </div>
+          <div class="avoid-card">
+            <div class="h"><span class="x">✕</span>Nomes de empresas ou terceiros</div>
+            <ul>
+              <li>Em seus exemplos durante a aula, evite mencionar nomes de empresas ou de terceiros.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="context-note" style="margin-top:28px;">
+          <span class="k">RITMO E CLAREZA</span>
+          <p>Fale um pouco mais devagar do que na conversa do dia a dia — isso dá tempo para quem está assistindo processar a informação, especialmente em temas técnicos. Evite vícios de linguagem que se repetem no fim das frases, como "né", "tá?" ou "não é mesmo?" — eles cansam quem assiste e tiram a autoridade da fala.</p>
+        </div>
+
+        <p class="s-sub" id="referencias" style="margin-top:12px;">Dois canais de conteúdo técnico usados como referência de estrutura e estética — enquadramento, hierarquia de fontes e estilo de edição das aulas. Ao assistir, repare em como a câmera se posiciona em relação à tela, como o rosto do instrutor continua visível mesmo durante a demonstração de código, e o ritmo de edição entre os cortes.</p>
+
+        <div class="video-grid" style="margin-top:22px;">
+          <div class="video-card">
+            <div class="video-wrap">
+              <iframe src="https://www.youtube.com/embed/Kp_41haOVQk" title="Referência de estrutura e estética — canal Walisson Silva" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="video-meta">
+              <div>
+                <div class="video-title">Walisson Silva</div>
+                <div class="video-desc">Canal de programação com foco em Python, Ciência de Dados e Desenvolvimento Web.</div>
+              </div>
+              <a class="link-btn ghost" href="https://youtu.be/Kp_41haOVQk?si=mV8EO9cGpPc8RKSa" target="_blank" rel="noopener">Ver no YouTube <span class="ar">→</span></a>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-wrap">
+              <iframe src="https://www.youtube.com/embed/4p7axLXXBGU" title="Referência de estrutura e estética — canal Hashtag Programação" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <div class="video-meta">
+              <div>
+                <div class="video-title">Hashtag Programação</div>
+                <div class="video-desc">Aulas de Python, JavaScript, HTML, CSS, SQL e Ciência de Dados, do básico ao avançado.</div>
+              </div>
+              <a class="link-btn ghost" href="https://youtu.be/4p7axLXXBGU?si=_HBUclXMbqYH4Lcw" target="_blank" rel="noopener">Ver no YouTube <span class="ar">→</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 06 · SAIBA MAIS ============ -->
+  <section class="slide tint" id="saiba-mais">
+    <span class="slide-mark">06 / 06</span>
+    <div class="wrap">
+      <div class="s-head">
+        <span class="s-eyebrow"><span class="e-dot"></span>Leituras complementares</span>
+        <h2 class="s-title">Para ir <span class="serif-em">além</span> do essencial.</h2>
+        <p class="s-sub">Leituras externas sobre boas práticas de gravação em casa, que complementam — sem contradizer — os direcionamentos da Ada.</p>
+      </div>
+      <div class="s-body">
+        <div class="read-grid">
+          <a class="read-card card" href="https://eadplataforma.com/blog/iluminacao-gravar-video-aula/" target="_blank" rel="noopener">
+            <span class="src">EAD PLATAFORMA</span>
+            <span class="t">Como caprichar na iluminação para gravar videoaula</span>
+            <span class="d">O triângulo de iluminação (luz principal, de preenchimento e contraluz) explicado de forma simples.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+          <a class="read-card card" href="https://www.clipescola.com/blog/boas-praticas-para-videoaulas" target="_blank" rel="noopener">
+            <span class="src">CLIPESCOLA</span>
+            <span class="t">Boas práticas para transmissão de videoaulas</span>
+            <span class="d">Dicas de áudio, ambiente silencioso e cuidados com roupas para não distrair do conteúdo.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+          <a class="read-card card" href="https://escolaweb.com.br/dicas-para-gravar-videoaulas-de-casa/" target="_blank" rel="noopener">
+            <span class="src">ESCOLAWEB</span>
+            <span class="t">Dicas para gravar suas videoaulas de casa</span>
+            <span class="d">Como aproveitar luz natural sem ficar de costas para a janela, e por que gravar na horizontal.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+          <a class="read-card card" href="https://radarmundo.com/como-posicionar-o-microfone-em-videoconferencia/" target="_blank" rel="noopener">
+            <span class="src">RADAR MUNDO</span>
+            <span class="t">Como posicionar o microfone em videoconferência</span>
+            <span class="d">Distância, ângulo e cuidados com o ambiente para um áudio mais limpo.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+          <a class="read-card card" href="https://www.crosshost.com.br/tecnicas-de-oratoria-para-videos/" target="_blank" rel="noopener">
+            <span class="src">CROSS HOST</span>
+            <span class="t">Técnicas de oratória para vídeos</span>
+            <span class="d">Ritmo de fala, vícios de linguagem e postura que valem a pena ajustar.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+          <a class="read-card card" href="https://fabricadecursos.com.br/blog/dicas-para-engajamento-nos-videos-de-treinamento/" target="_blank" rel="noopener">
+            <span class="src">FÁBRICA DE CURSOS</span>
+            <span class="t">Como criar engajamento nos vídeos de e-learning</span>
+            <span class="d">Duração ideal, variação entre câmera e tela, e por que o áudio importa tanto quanto a imagem.</span>
+            <span class="go">Ler artigo →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ CLOSING SLIDE ============ -->
+<section class="close-slide">
+  <div class="wrap">
+    <span class="eyebrow"><span class="e-dot"></span>Ada · Guia de Gravação Remota</span>
+    <h2 class="close-title">Você está pronto <span class="serif-em" style="color:var(--green-400)">para gravar</span>.</h2>
+    <p class="close-lead">Equipamento em mãos, OBS configurado, enquadramento conferido e roteiro na ponta da língua. É apertar REC.</p>
+    <div class="close-cta">
+      <a class="btn btn-primary" href="#topo">↑ Voltar ao início do guia</a>
+    </div>
+    <div class="close-meta">
+      <div class="item"><div class="l">⏱️ DURAÇÃO</div><div class="v">até 25 min</div></div>
+      <span class="sep"></span>
+      <div class="item"><div class="l">🎞️ FORMATO</div><div class="v">1920×1080 · MP4</div></div>
+      <span class="sep"></span>
+      <div class="item"><div class="l">📂 ENTREGA</div><div class="v">pasta do Drive</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <span class="brandmark">
+      <img src="data:image/png;base64,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" alt="Ada">
+      Ada · Guia de Gravação Remota
+    </span>
+    <p class="foot-note">Dúvidas sobre a gravação? Volte ao <a href="https://drive.google.com/file/d/1NgdFlp55fZmXEsbVkMCaGX9mlUV5ziVm/view?usp=sharing" target="_blank" rel="noopener">treinamento completo</a> ou fale com o time Ada responsável pela sua alocação.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---- Checklist state (persisted locally; purely a nice-to-have, no floating UI) ----
+  var STORAGE_KEY = 'ada-gravacao-checklist';
+  var allBoxes = function(){ return document.querySelectorAll('input[type="checkbox"][data-id]'); };
+
+  function loadState(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function saveState(state){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){}
+  }
+  function updateGroupCounts(){
+    document.querySelectorAll('.checklist[data-group]').forEach(function(list){
+      var group = list.getAttribute('data-group');
+      var boxes = list.querySelectorAll('input[type="checkbox"][data-id]');
+      var done = 0;
+      boxes.forEach(function(b){ if(b.checked) done++; });
+      var counter = document.querySelector('.check-group-count[data-count-for="'+group+'"]');
+      if(counter) counter.textContent = done + '/' + boxes.length;
+    });
+  }
+  function applyState(){
+    var state = loadState();
+    allBoxes().forEach(function(box){
+      var id = box.getAttribute('data-id');
+      box.checked = !!state[id];
+      box.closest('.check-item').classList.toggle('checked', box.checked);
+    });
+    updateGroupCounts();
+  }
+
+  document.addEventListener('change', function(e){
+    var box = e.target;
+    if(box.matches('input[type="checkbox"][data-id]')){
+      var id = box.getAttribute('data-id');
+      var state = loadState();
+      state[id] = box.checked;
+      saveState(state);
+      box.closest('.check-item').classList.toggle('checked', box.checked);
+      updateGroupCounts();
+    }
+  });
+
+  applyState();
+})();
+</script>
+
+</body>
+</html>
